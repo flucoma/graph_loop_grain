@@ -1,0 +1,81 @@
+TITLE:: FluidGraphLoop
+summary:: Loop audio using similarity graph
+categories:: FluidCorpusManipulation
+
+
+DESCRIPTION::
+Loop an audio file at positions defined by a similarity graph, close to a requested start-end point.
+This can sometimes find nautrally-sounding phrases contained in the audio.
+
+CLASSMETHODS::
+
+METHOD:: new
+Make a new FluidGraphLoop model for the given server.
+
+ARGUMENT:: server
+The server on which to make the model.
+
+ARGUMENT:: source
+Source buffer
+
+ARGUMENT:: numBands
+Number of Mel bands
+
+ARGUMENT:: threshold
+Distance threshold (see ar method)
+
+ARGUMENT:: quantize
+Quantize links using the beat spectrum (leave only multiples of beat)
+
+ARGUMENT:: start
+(see ar method)
+
+ARGUMENT:: end
+(see ar method)
+
+ARGUMENT:: output
+Output buffer (contains current position and current cluster id during playback)
+
+ARGUMENT:: windowSize
+STFT window size.
+
+ARGUMENT:: hopSize
+STFT hop size.
+
+ARGUMENT:: fftSize
+STFT FFT size.
+
+ARGUMENT:: maxFFTSize
+Maximum STFT FFT size.
+
+INSTANCEMETHODS::
+
+METHOD:: analyze
+analyze the sound provided in the source buffer. Needs to be called before starting playback.
+
+METHOD:: ar
+Loop the analyzed sound file
+
+ARGUMENT:: start
+Requested start time (normalized from 0 to 1)
+
+ARGUMENT:: end
+Requested end time (normalized from 0 to 1)
+
+
+EXAMPLES::
+
+code::
+
+s.boot;
+b = Buffer.read(s, Platform.resourceDir +/+ "sounds/a11wlk01.wav");
+x = FluidGraphLoop.new(s, b);
+x.analyze(action:{"done.".postln;})
+// wait for done, then run the synth
+a={|st = 0.2, e = 0.4|
+	Out.ar(0, x.ar(st, e)!2)
+}.play(s)
+
+a.set(\e, 0.6)
+
+::

@@ -1,0 +1,97 @@
+TITLE:: FluidGraphPlay
+summary:: Play audio using similarity graph
+categories:: FluidCorpusManipulation
+
+DESCRIPTION::
+Play an audio file by jumping at random locations the Self-Similarity Graph and a minimum segment length.
+
+CLASSMETHODS::
+
+CLASSMETHODS::
+
+METHOD:: new
+Make a new FluidGraphPlay model for the given server.
+
+ARGUMENT:: server
+The server on which to make the model.
+
+ARGUMENT:: source
+Source buffer
+
+ARGUMENT:: numBands
+Number of Mel bands
+
+ARGUMENT:: threshold
+Distance threshold (see ar method)
+
+ARGUMENT:: minDur
+(see ar method)
+
+ARGUMENT:: minDist
+(see ar method)
+
+ARGUMENT:: forget
+(see ar method)
+
+ARGUMENT:: start
+(see ar method)
+
+ARGUMENT:: output
+Output buffer (contains current position and current cluster id during playback)
+
+ARGUMENT:: windowSize
+STFT window size.
+
+ARGUMENT:: hopSize
+STFT hop size.
+
+ARGUMENT:: fftSize
+STFT FFT size.
+
+ARGUMENT:: maxFFTSize
+Maximum STFT FFT size.
+
+
+INSTANCEMETHODS::
+
+METHOD:: analyze
+analyze the sound provided in the source buffer. Needs to be called before starting playback.
+
+METHOD:: ar
+Stochastic playback of the analyzed sound file
+
+ARGUMENT:: start
+Start time (normalized from 0 to 1)
+
+ARGUMENT:: threshold
+Distance threshold: follow only links to frames closer than the threshold (0 to 1)
+
+ARGUMENT:: minDur
+Minimum segment duration (in spectral frames)
+
+ARGUMENT:: minDist
+Jump to a location that is further in time than the minimum specified by this parameter (in spectral frames).
+
+ARGUMENT:: forget
+A link that has already been visited is blacklisted by a number of frames defined by this parameter
+
+
+EXAMPLES::
+
+code::
+
+
+
+s.boot;
+
+b = Buffer.read(s, Platform.resourceDir +/+ "sounds/a11wlk01.wav")
+x = FluidGraphPlay.new(s, b);
+x.analyze(action:{"done.".postln;})
+// wait for done, then run the synth
+a={|start = 0.5, thresh = 0.2, dur = 10|
+	Out.ar(0, x.ar(start, thresh, dur)!2)
+}.play(s)
+
+a.set(\dur, 2)
+
+::

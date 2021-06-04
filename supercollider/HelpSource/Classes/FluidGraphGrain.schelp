@@ -1,0 +1,96 @@
+TITLE:: FluidGraphGrain
+summary:: Granulate using similarity graph
+categories:: FluidCorpusManipulation
+
+DESCRIPTION::
+Play an audio file by concatenating spectral frames using the Self-Similarity Graph and spectral clustering.
+
+CLASSMETHODS::
+
+METHOD:: new
+Make a new FluidGraphGrain model for the given server.
+
+ARGUMENT:: server
+The server on which to make the model.
+
+ARGUMENT:: source
+Source buffer
+
+ARGUMENT:: numBands
+Number of Mel bands
+
+ARGUMENT:: threshold
+Distance threshold (see  ar method)
+
+ARGUMENT:: numClusters
+Number of clusters
+
+ARGUMENT:: forgetfulness
+(see ar method)
+
+ARGUMENT:: randomness
+(see ar method)
+
+ARGUMENT:: phase
+(see ar method)
+
+ARGUMENT:: start
+(see ar method)
+
+ARGUMENT:: output
+Output buffer (contains current position and current cluster id during playback)
+
+ARGUMENT:: windowSize
+STFT window size.
+
+ARGUMENT:: hopSize
+STFT hop size.
+
+ARGUMENT:: fftSize
+STFT FFT size.
+
+ARGUMENT:: maxFFTSize
+Maximum STFT FFT size.
+
+INSTANCEMETHODS::
+
+METHOD:: analyze
+analyze the sound provided in the source buffer. Needs to be called before starting playback.
+
+
+METHOD:: ar
+Granulate the analyzed sound file
+
+ARGUMENT:: start
+Start time (normalized from 0 to 1)
+
+ARGUMENT:: threshold
+Distance threshold: follow only links to frames closer than the threshold (0 to 1)
+
+ARGUMENT:: forgetfulness
+A link that has already been visited is blacklisted by a number of frames defined by this parameter
+
+ARGUMENT:: randomness
+Probability of jumping to a random frame within the same cluster (0 to 1). Since the playback head always jumps to the closest neighbour, a value of 0 will create deterministic loops with the length defined by forgetfulness.
+
+ARGUMENT:: phase
+Synthesize the phase (good for tonal material)
+
+
+EXAMPLES::
+
+code::
+
+s.boot;
+b = Buffer.read(s, Platform.resourceDir +/+ "sounds/a11wlk01.wav")
+x = FluidGraphGrain.new(s, b);
+x.analyze(action:{"done.".postln;})
+// wait for done, then run the synth
+a = {|start = 0.2, thresh = 0.3, forget = 200, rand = 0.1, phase = 1|
+	Out.ar(0, x.ar(start, thresh, forget, rand, phase)!2)
+}.play(s)
+
+a.set(\start,0.7)
+a.set(\rand,0)
+
+::
