@@ -3,7 +3,7 @@
 This repository contains the source code for three experimental objects for audio playback, based on the self-similarity graph derived from time-frequency analysis. Links between spectral frames of high similarity can be seen as 'wormholes', that can be used to create alternative playback paths. The graph is also used to find clusters of similar frames, detect onsets and find common repetitive periods.
 Three objects are included for Max and SuperCollider: FluidGraphlLoop (Max: fluid.graphloop~) implements a looper that finds good looping points based on similarity. FluidGraphGrain (Max: fluid.graphgrain~) implements a granular synthesis algorithm that concatenates spectral frames within a cluster. FluidGraphPlay (Max: fluid.graphplay~) implements a stochastic playback algorithm that allows jumping at random locations based on similarity and a minimum segment length.
 
-The objects are based on the [Fluid Corpus Manipulation Library](https://flucoma.org)
+The objects are based on the [Fluid Corpus Manipulation Library](https://www.flucoma.org)
 
 #  Building for Max
 
